@@ -1,5 +1,9 @@
 package com.example.ishant.jsonblob.activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,26 +11,20 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.ishant.jsonblob.R;
 import com.example.ishant.jsonblob.adapters.ExpenseListAdapter;
 import com.example.ishant.jsonblob.models.entities.ExpenseModel;
-import com.example.ishant.jsonblob.models.responses.ExpenseListResponse;
 import com.example.ishant.jsonblob.presenters.MainActivityPresenter;
 import com.example.ishant.jsonblob.presenters.MainActivityView;
-import com.example.ishant.jsonblob.restApi.RestApiClient;
-import com.example.ishant.jsonblob.restApi.RestApiService;
+import com.example.ishant.jsonblob.receivers.TaskListener;
 import com.example.ishant.jsonblob.utils.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class MainActivity extends BaseActivity implements MainActivityView {
@@ -39,6 +37,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private LinearLayout progressBarLayout;
     private SwipeRefreshLayout swipeContainer;
     private LinearLayout noConnectionLayout;
+    private TaskListener.OnPostTokenReceivedListener onPostTokenReceivedListener;
 
 
     @Override
@@ -46,6 +45,15 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = setUpToolbar("LIST");
+        if(this.onPostTokenReceivedListener == null) {
+            this.onPostTokenReceivedListener = new TaskListener.OnPostTokenReceivedListener() {
+                @Override
+                public void onTokenReceived() {
+                    presenter.retryRequest();
+                }
+            };
+        }
+        TaskListener.onPostTokenReceivedListener = onPostTokenReceivedListener;
         initialiseUI();
     }
 
@@ -75,6 +83,18 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         };
     }
 
+    public void scheduleAlarm() {
+
+        Intent intent = new Intent(getApplicationContext(), TaskListener.class);
+        final PendingIntent pIntent = PendingIntent.getBroadcast(this, TaskListener.REQUEST_CODE,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        long firstMillis = System.currentTimeMillis(); // alarm is set right away
+        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        //task scheduled for every 30 seconds
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis,
+                1000*30, pIntent);
+    }
+
     @Override
     public void showExpenseList(List<ExpenseModel> list) {
         expenseList = list;
@@ -93,6 +113,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.addItemDecoration(new DividerItemDecoration(this));
         }
+        scheduleAlarm();
     }
 
     @Override
@@ -119,4 +140,19 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     public void showToastMessage(String message) {
         Toast.makeText(this,message,Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cancelAlarm();
+    }
+
+    public void cancelAlarm() {
+        Intent intent = new Intent(getApplicationContext(), TaskListener.class);
+        final PendingIntent pIntent = PendingIntent.getBroadcast(this, TaskListener.REQUEST_CODE,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        alarm.cancel(pIntent);
+    }
+
 }
