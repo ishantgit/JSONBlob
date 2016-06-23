@@ -29,6 +29,14 @@ public class MainActivityPresenter implements Presenter {
         showAppropriateLayout();
     }
 
+    public void taskRequest(){
+        if(Utils.isInternetConnected()){
+            getExpenseList();
+        }else{
+            view.showToastMessage("Internet is not working check connection");
+        }
+    }
+
     private void showAppropriateLayout() {
         if(Utils.isInternetConnected()){
             getExpenseList();

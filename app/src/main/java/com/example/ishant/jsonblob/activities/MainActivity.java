@@ -49,7 +49,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             this.onPostTokenReceivedListener = new TaskListener.OnPostTokenReceivedListener() {
                 @Override
                 public void onTokenReceived() {
-                    presenter.retryRequest();
+                    presenter.taskRequest();
                 }
             };
         }
