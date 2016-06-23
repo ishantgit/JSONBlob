@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.example.ishant.jsonblob.R;
 import com.example.ishant.jsonblob.models.entities.ExpenseModel;
 
+
 import java.util.List;
 
 /**
@@ -34,9 +35,10 @@ public class ExpenseListAdapter extends RecyclerView.Adapter<ExpenseListAdapter.
     @Override
     public void onBindViewHolder(ExpenseItemHolder holder, int position) {
         ExpenseModel expenseModel = expenseList.get(position);
-        holder.amount.setText("" + expenseModel.getAmount());
+        holder.amount.setText(context.getString(R.string.Rs) + expenseModel.getAmount());
         holder.description.setText(expenseModel.getDescription());
         holder.state.setText(expenseModel.getState());
+        holder.category.setText(expenseModel.getCategory());
     }
 
     public void setData(List<ExpenseModel> data) {
@@ -49,12 +51,13 @@ public class ExpenseListAdapter extends RecyclerView.Adapter<ExpenseListAdapter.
     }
 
     public class ExpenseItemHolder extends RecyclerView.ViewHolder {
-        private TextView amount,description,state;
+        private TextView amount,description,state,category;
         public ExpenseItemHolder(View itemView) {
             super(itemView);
             amount = (TextView)itemView.findViewById(R.id.expense_amount);
             description = (TextView)itemView.findViewById(R.id.expense_des);
             state = (TextView)itemView.findViewById(R.id.expense_state);
+            category = (TextView)itemView.findViewById(R.id.expense_category);
         }
     }
 }

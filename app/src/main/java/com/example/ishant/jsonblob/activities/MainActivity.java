@@ -44,7 +44,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toolbar = setUpToolbar("LIST");
+        toolbar = setUpToolbar("Expenses");
         if(this.onPostTokenReceivedListener == null) {
             this.onPostTokenReceivedListener = new TaskListener.OnPostTokenReceivedListener() {
                 @Override

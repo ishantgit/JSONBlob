@@ -31,7 +31,7 @@ public class RestApiClient {
 
     private static Retrofit setUpUnauthorisedClient() {
 
-        // Add the interceptor to OkHttpClient
+
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .readTimeout(15, TimeUnit.SECONDS)
