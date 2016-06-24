@@ -9,11 +9,13 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.ishant.jsonblob.MyApplication;
 import com.example.ishant.jsonblob.R;
 import com.example.ishant.jsonblob.adapters.ExpenseListAdapter;
 import com.example.ishant.jsonblob.models.entities.ExpenseModel;
@@ -45,6 +47,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = setUpToolbar("Expenses");
+
         if(this.onPostTokenReceivedListener == null) {
             this.onPostTokenReceivedListener = new TaskListener.OnPostTokenReceivedListener() {
                 @Override
@@ -113,7 +116,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.addItemDecoration(new DividerItemDecoration(this));
         }
-        scheduleAlarm();
     }
 
     @Override
@@ -141,11 +143,25 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         Toast.makeText(this,message,Toast.LENGTH_LONG).show();
     }
 
+
+
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onResume() {
+        super.onResume();
+        Log.i("state","onResume");
+        MyApplication.enableReceiver();
+        scheduleAlarm();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("state","onPause");
+        MyApplication.disableReceiver();
         cancelAlarm();
     }
+
+
 
     public void cancelAlarm() {
         Intent intent = new Intent(getApplicationContext(), TaskListener.class);

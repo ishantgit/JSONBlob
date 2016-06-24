@@ -1,6 +1,10 @@
 package com.example.ishant.jsonblob;
 
 import android.app.Application;
+import android.content.ComponentName;
+import android.content.pm.PackageManager;
+
+import com.example.ishant.jsonblob.receivers.TaskListener;
 
 import java.util.Map;
 
@@ -19,6 +23,18 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         singleInstance = this;
+
     }
+
+    public static void enableReceiver(){
+        ComponentName component = new ComponentName(singleInstance, TaskListener.class);
+        singleInstance.getPackageManager().setComponentEnabledSetting(component, PackageManager. COMPONENT_ENABLED_STATE_ENABLED , PackageManager.DONT_KILL_APP);
+    }
+
+    public static void disableReceiver(){
+        ComponentName component = new ComponentName(singleInstance, TaskListener.class);
+        singleInstance.getPackageManager().setComponentEnabledSetting(component, PackageManager. COMPONENT_ENABLED_STATE_DISABLED , PackageManager.DONT_KILL_APP);
+    }
+
 
 }
