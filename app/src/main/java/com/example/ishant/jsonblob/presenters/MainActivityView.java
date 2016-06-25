@@ -2,6 +2,7 @@ package com.example.ishant.jsonblob.presenters;
 
 
 import com.example.ishant.jsonblob.models.entities.ExpenseModel;
+import com.example.ishant.jsonblob.models.responses.ExpenseListResponse;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
  */
 public interface MainActivityView extends View {
 
-    void showExpenseList(List<ExpenseModel> expenseList);
+    void showExpenseList(ExpenseListResponse expenseListResponse);
 
     void finish();
 

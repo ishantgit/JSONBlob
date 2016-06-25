@@ -51,7 +51,7 @@ public class MainActivityPresenter implements Presenter {
             @Override
             public void onSuccess(ExpenseListResponse response) {
                 view.hideProgress();
-                view.showExpenseList(response.getExpenseList());
+                view.showExpenseList(response);
             }
 
             @Override
@@ -60,6 +60,24 @@ public class MainActivityPresenter implements Presenter {
             }
 
         }).execute(call);
+    }
+
+
+    public void verifyExpenseObject(ExpenseListResponse expenseResponse){
+        Call<ExpenseListResponse> call = RestApiClient.getRestApiService().verifyExpenseListObject(expenseResponse);
+        new NetworkManager<>(new ResponseCallback<ExpenseListResponse>() {
+
+            @Override
+            public void onSuccess(ExpenseListResponse response) {
+                view.showExpenseList(response);
+            }
+
+            @Override
+            public void onFailure(String status) {
+                view.showToastMessage(status);
+            }
+        }).execute(call);
+
     }
 
 }

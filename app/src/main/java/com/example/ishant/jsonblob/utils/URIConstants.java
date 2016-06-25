@@ -7,5 +7,5 @@ public class URIConstants {
 
     public static final String BASE_URL = "http://jsonblob.com/api/jsonBlob/";
 
-    public static final String GET_LIST = "570de811e4b01190df5dafec";
+    public static final String GET_LIST = "570de811e4b01190df5dafec/";
 }

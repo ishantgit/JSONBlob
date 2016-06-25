@@ -1,5 +1,6 @@
 package com.example.ishant.jsonblob.models.entities;
 
+import com.example.ishant.jsonblob.models.enums.StateType;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -17,7 +18,7 @@ public class ExpenseModel  {
     private String id;
 
     @SerializedName("state")
-    private String state;
+    private StateType state;
 
     @SerializedName("time")
     private String time;
@@ -49,11 +50,11 @@ public class ExpenseModel  {
         this.id = id;
     }
 
-    public String getState() {
+    public StateType getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(StateType state) {
         this.state = state;
     }
 

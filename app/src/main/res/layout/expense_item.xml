@@ -44,4 +44,36 @@
         android:id="@+id/expense_state"
         android:textStyle="bold|italic"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/verify_button"
+            android:textStyle="bold"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/holo_green_dark"
+            android:text="VERIFY"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/unverify_button"
+            android:textStyle="bold"
+            android:layout_marginRight="10dp"
+            android:layout_alignRight="@+id/verify_button"
+            android:background="@android:color/holo_blue_light"
+            android:text="UNVERIFY"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fraud_button"
+            android:textStyle="bold"
+            android:layout_marginRight="10dp"
+            android:layout_alignRight="@+id/unverify_button"
+            android:background="@android:color/darker_gray"
+            android:text="FRAUD"/>
+    </LinearLayout>
+
 </LinearLayout>

@@ -1,7 +1,9 @@
 package com.example.ishant.jsonblob.activities;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +21,8 @@ import com.example.ishant.jsonblob.MyApplication;
 import com.example.ishant.jsonblob.R;
 import com.example.ishant.jsonblob.adapters.ExpenseListAdapter;
 import com.example.ishant.jsonblob.models.entities.ExpenseModel;
+import com.example.ishant.jsonblob.models.enums.StateType;
+import com.example.ishant.jsonblob.models.responses.ExpenseListResponse;
 import com.example.ishant.jsonblob.presenters.MainActivityPresenter;
 import com.example.ishant.jsonblob.presenters.MainActivityView;
 import com.example.ishant.jsonblob.receivers.TaskListener;
@@ -35,11 +39,13 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private RecyclerView recyclerView;
     private ExpenseListAdapter expenseListAdapter;
     private List<ExpenseModel> expenseList=null;
+    private ExpenseListResponse expenseResponse = null;
     private MainActivityPresenter presenter;
     private LinearLayout progressBarLayout;
     private SwipeRefreshLayout swipeContainer;
     private LinearLayout noConnectionLayout;
     private TaskListener.OnPostTokenReceivedListener onPostTokenReceivedListener;
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -74,6 +80,9 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             }
         });
         presenter = new MainActivityPresenter(this);
+        progressDialog = new ProgressDialog(this,ProgressDialog.STYLE_SPINNER);
+        progressDialog.setMessage("VERIFYING");
+        progressDialog.setCancelable(false);
         presenter.onResume();
     }
 
@@ -99,8 +108,12 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     }
 
     @Override
-    public void showExpenseList(List<ExpenseModel> list) {
-        expenseList = list;
+    public void showExpenseList(ExpenseListResponse expenseListResponse) {
+        if(progressDialog!=null && progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
+        expenseList = expenseListResponse.getExpenseList();
+        expenseResponse = expenseListResponse;
         if(expenseListAdapter!=null){
             expenseListAdapter.setData(expenseList);
             expenseListAdapter.notifyDataSetChanged();
@@ -115,7 +128,35 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             recyclerView.setAdapter(expenseListAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.addItemDecoration(new DividerItemDecoration(this));
+            expenseListAdapter.onItemClickListener(getExpenseVerifyClickListener());
         }
+    }
+
+
+
+    private ExpenseListAdapter.OnItemClickListener getExpenseVerifyClickListener() {
+        final Activity activity = this;
+        return new ExpenseListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position,StateType state) {
+                if(expenseResponse != null){
+                    ExpenseListResponse responseToSend = new ExpenseListResponse();
+                    if(progressDialog == null){
+                        progressDialog= new ProgressDialog(activity,ProgressDialog.STYLE_SPINNER);
+                        progressDialog.setCancelable(false);
+                    }
+                    progressDialog.setMessage(state.getValue());
+                    progressDialog.show();
+                    List<ExpenseModel> list = expenseResponse.getExpenseList();
+                    ExpenseModel model = list.get(position);
+                    model.setState(state);
+                    list.remove(position);
+                    list.add(position,model);
+                    responseToSend.setExpenseList(list);
+                    presenter.verifyExpenseObject(responseToSend);
+                }
+            }
+        };
     }
 
     @Override

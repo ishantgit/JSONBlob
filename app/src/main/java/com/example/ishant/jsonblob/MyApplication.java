@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.ComponentName;
 import android.content.pm.PackageManager;
 
+import com.example.ishant.jsonblob.models.responses.ExpenseListResponse;
 import com.example.ishant.jsonblob.receivers.TaskListener;
 
 import java.util.Map;
@@ -18,6 +19,8 @@ public class MyApplication extends Application {
     public static MyApplication getInstance() {
         return singleInstance;
     }
+
+    public static ExpenseListResponse expenseResponse = null;
 
     @Override
     public void onCreate() {
@@ -37,4 +40,11 @@ public class MyApplication extends Application {
     }
 
 
+    public static ExpenseListResponse getExpenseResponse() {
+        return expenseResponse;
+    }
+
+    public static void setExpenseResponse(ExpenseListResponse expenseResponse) {
+        MyApplication.expenseResponse = expenseResponse;
+    }
 }
