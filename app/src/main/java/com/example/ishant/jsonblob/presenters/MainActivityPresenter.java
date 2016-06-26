@@ -45,6 +45,8 @@ public class MainActivityPresenter implements Presenter {
         }
     }
 
+    // Network Manager is Generic Class to handle Request
+    // GET Request
     private void getExpenseList(){
         Call<ExpenseListResponse> call = RestApiClient.getRestApiService().getExpensesList();
         new NetworkManager<>(new ResponseCallback<ExpenseListResponse>() {
@@ -62,7 +64,7 @@ public class MainActivityPresenter implements Presenter {
         }).execute(call);
     }
 
-
+    //POST Request
     public void verifyExpenseObject(ExpenseListResponse expenseResponse){
         Call<ExpenseListResponse> call = RestApiClient.getRestApiService().verifyExpenseListObject(expenseResponse);
         new NetworkManager<>(new ResponseCallback<ExpenseListResponse>() {

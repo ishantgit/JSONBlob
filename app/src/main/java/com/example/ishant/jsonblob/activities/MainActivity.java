@@ -54,6 +54,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         setContentView(R.layout.activity_main);
         toolbar = setUpToolbar("Expenses");
 
+        //Receiver Interface
         if(this.onPostTokenReceivedListener == null) {
             this.onPostTokenReceivedListener = new TaskListener.OnPostTokenReceivedListener() {
                 @Override
@@ -79,9 +80,8 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                 presenter.retryRequest();
             }
         });
-        presenter = new MainActivityPresenter(this);
+        presenter = new MainActivityPresenter(this); // Presenter will handle the async task and result
         progressDialog = new ProgressDialog(this,ProgressDialog.STYLE_SPINNER);
-        progressDialog.setMessage("VERIFYING");
         progressDialog.setCancelable(false);
         presenter.onResume();
     }
@@ -95,6 +95,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         };
     }
 
+    // Scheduler for Receiver
     public void scheduleAlarm() {
 
         Intent intent = new Intent(getApplicationContext(), TaskListener.class);
@@ -106,6 +107,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis,
                 1000*30, pIntent);
     }
+
 
     @Override
     public void showExpenseList(ExpenseListResponse expenseListResponse) {
@@ -202,8 +204,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         cancelAlarm();
     }
 
-
-
+    // Cancel Scheduler Receiver
     public void cancelAlarm() {
         Intent intent = new Intent(getApplicationContext(), TaskListener.class);
         final PendingIntent pIntent = PendingIntent.getBroadcast(this, TaskListener.REQUEST_CODE,

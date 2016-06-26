@@ -23,6 +23,7 @@ public class ExpenseListAdapter extends RecyclerView.Adapter<ExpenseListAdapter.
     private Context context;
     private List<ExpenseModel> expenseList;
 
+    // Interface for Activity to View Holder instance class
     private OnItemClickListener mItemclicklistener;
 
     public interface OnItemClickListener{
